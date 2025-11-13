@@ -92,7 +92,7 @@
     .btn-outline { background-color: transparent; border: 1px solid hsl(var(--border)); color: hsl(var(--foreground)); }
     .btn-outline:hover { background-color: hsl(var(--accent)); }
 
-    /* Novas variantes */
+    
     .btn-danger { background-color: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
     .btn-danger:hover { filter: brightness(0.95); }
     .btn-info { background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
@@ -241,7 +241,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
         readOnly: false
       });
 
-      // Garante colagem no editor de entrada
+     
       document.getElementById('inputEditor').addEventListener('paste', (e) => {
         const text = e.clipboardData && e.clipboardData.getData('text/plain');
         if (typeof text === 'string' && text.length) {
@@ -268,7 +268,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       initializeEventListeners();
     });
 
-    // Exemplos sem crases (evita conflitos de fechamento)
+  
     const sampleData = {
       json: "{\n  \"users\": [\n    { \"id\": 1, \"name\": \"Alice\", \"role\": \"admin\", \"active\": true },\n    { \"id\": 2, \"name\": \"Bob\", \"role\": \"user\", \"active\": true },\n    { \"id\": 3, \"name\": \"Charlie\", \"role\": \"user\", \"active\": false }\n  ],\n  \"settings\": {\n    \"theme\": \"dark\",\n    \"language\": \"pt-BR\",\n    \"notifications\": true\n  },\n  \"metrics\": {\n    \"totalUsers\": 3,\n    \"activeUsers\": 2,\n    \"lastUpdated\": \"2025-11-13\"\n  }\n}",
       xml: "<?xml version=\"1.0\"?>\n<data>\n  <users>\n    <user>\n      <id>1</id>\n      <name>Alice</name>\n      <role>admin</role>\n      <active>true</active>\n    </user>\n    <user>\n      <id>2</id>\n      <name>Bob</name>\n      <role>user</role>\n      <active>true</active>\n    </user>\n  </users>\n  <settings>\n    <theme>dark</theme>\n    <language>pt-BR</language>\n  </settings>\n</data>",
@@ -301,7 +301,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       });
     }
 
-    // Detecção com suporte a JSON com comentários
+
     function detectFormat(text) {
       if (!text || !text.trim()) return '';
       const jsonCandidate = stripJsonComments(text);
@@ -316,7 +316,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       return '';
     }
 
-    // Remove comentários de JSON (// e /*...*/) preservando strings
+    
     function stripJsonComments(str) {
       let out = '';
       let inStr = false, strChar = '', inLine = false, inBlock = false, escaped = false;
@@ -338,7 +338,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       return out;
     }
 
-    // Remove comentários inline em YAML (# ...), respeitando aspas
+
     function stripYamlInlineComments(str) {
       const lines = str.split(/\r?\n/);
       const out = lines.map(line => {
@@ -404,7 +404,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       showToast('✅ Conversão concluída!');
     }
 
-    // TOON Encoder
+
     function jsonToToon(obj, indent = 0) {
       const spaces = '  '.repeat(indent);
       let result = '';
@@ -435,7 +435,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       return result;
     }
 
-    // XML -> JSON
+
     function parseXMLToJSON(xmlString) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
@@ -463,7 +463,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       return parseNode(xmlDoc.documentElement);
     }
 
-    // YAML -> JSON (simplificado)
+   
     function parseYAMLToJSON(yamlString) {
       const lines = yamlString.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
       const result = {};
@@ -502,7 +502,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       return result;
     }
 
-    // CSV -> JSON
+   
     function csvToJson(csv) {
       const rows = csv.trim().split(/\r?\n/);
       if (rows.length < 2) return { csv: [] };
@@ -567,9 +567,8 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
   </script>
-<!-- --- DOAÇÃO FIXA (cole antes do </body>) --- -->
+
 <style>
-/* --- Caixa fixa no canto --- */
 .donation-cta {
   position: fixed;
   right: 18px;
@@ -592,7 +591,6 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   height: auto;
 }
 
-/* --- MODAL (pop-up do QR grande) --- */
 #qrModal {
   display: none;
   position: fixed;
@@ -608,7 +606,6 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   display: flex;
 }
 
-/* caixa interna do modal */
 .qr-box {
   text-align: center;
   animation: fadeIn .2s ease-out;
@@ -628,14 +625,11 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   box-shadow: 0 0 25px rgba(255,255,255,0.2);
 }
 
-/* animação suave */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(.95); }
   to { opacity: 1; transform: scale(1); }
 }
 
-
-/* estiliza o texto */
 .donation-cta span {
   color: #fff;
   font-size: 0.95rem;
@@ -648,7 +642,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   font-weight: 700;
   font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 0.95rem;
-  text-align: center;              /* centraliza o texto */
+  text-align: center;              
   white-space: nowrap;
   text-shadow: 0 1px 0 rgba(0,0,0,0.6);
 }
@@ -659,7 +653,7 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
     padding: 8px 10px;
   }
   .donation-cta img {
-    width: 90px;  /* tamanho menor em mobile */
+    width: 90px;  
   }
   .donation-cta .donation-text {
     font-size: 0.85rem;
@@ -672,13 +666,11 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   <span>Apoie o site com Satoshis</span>
 </div>
 
-<!-- Modal -->
 <div id="qrModal" onclick="this.classList.remove('active')">
   <div class="qr-box">
     <h2>Obrigado por apoiar nosso projeto</h2>
     <img src="assets/wos.jpg" alt="QR Code Grande">
   </div>
 </div>
-<!-- --- FIM DOAÇÃO --- -->
 </body>
 </html>
