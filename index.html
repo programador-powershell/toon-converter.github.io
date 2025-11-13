@@ -575,26 +575,29 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   bottom: 18px;
   z-index: 9999;
   display: flex;
-  flex-direction: column;        /* muda para coluna: imagem em cima, texto embaixo */
-  align-items: center;           /* centraliza o texto sob a imagem */
-  gap: .4rem;                     /* espaço entre imagem e texto */
-  background: rgba(0,0,0,0.6);
-  padding: 10px 12px;            /* aumentar um pouco */
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  backdrop-filter: blur(4px);
-  transition: transform .12s ease, opacity .12s ease;
+  flex-direction: column;     /* imagem em cima, texto embaixo */
+  align-items: center;        /* texto centralizado */
+  gap: .6rem;                 /* mais espaço entre imagem e texto */
+  background: rgba(0,0,0,0.55);
+  padding: 14px 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+  backdrop-filter: blur(6px);
 }
-.donation-cta:hover {
-  transform: translateY(-4px);
-  opacity: 0.98;
-}
+
+/* aumenta bastante o QR Code */
 .donation-cta img {
-  width: 120px;   /* aumenta o tamanho da imagem para 120px de largura */
+  width: 200px !important;   /* antes estava pequeno */
   height: auto;
-  display: block;
-  border-radius: 8px;
-  border: 2px solid rgba(255,255,255,0.06);
+}
+
+/* estiliza o texto */
+.donation-cta span {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
 }
 .donation-cta .donation-text {
   color: #ffd24d;
