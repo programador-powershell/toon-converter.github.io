@@ -569,27 +569,71 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
   </script>
 <!-- --- DOAÇÃO FIXA (cole antes do </body>) --- -->
 <style>
+/* --- Caixa fixa no canto --- */
 .donation-cta {
   position: fixed;
   right: 18px;
   bottom: 18px;
   z-index: 9999;
   display: flex;
-  flex-direction: column;     /* imagem em cima, texto embaixo */
-  align-items: center;        /* texto centralizado */
-  gap: .6rem;                 /* mais espaço entre imagem e texto */
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
   background: rgba(0,0,0,0.55);
   padding: 14px 16px;
   border-radius: 14px;
   box-shadow: 0 8px 22px rgba(0,0,0,0.28);
   backdrop-filter: blur(6px);
+  cursor: pointer;
 }
 
-/* aumenta bastante o QR Code */
 .donation-cta img {
-  width: 200px !important;   /* antes estava pequeno */
+  width: 300px;
   height: auto;
 }
+
+/* --- MODAL (pop-up do QR grande) --- */
+#qrModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  justify-content: center;
+  align-items: center;
+}
+
+#qrModal.active {
+  display: flex;
+}
+
+/* caixa interna do modal */
+.qr-box {
+  text-align: center;
+  animation: fadeIn .2s ease-out;
+}
+
+.qr-box h2 {
+  color: #fff;
+  font-size: 1.4rem;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.qr-box img {
+  width: 600px;
+  max-width: 90vw;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(255,255,255,0.2);
+}
+
+/* animação suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 
 /* estiliza o texto */
 .donation-cta span {
@@ -623,10 +667,18 @@ importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
 }
 </style>
 
-<a class="donation-cta" href="lnurl1dp68gurn8ghj7ampd3kx2ar0veekzar0wd5xjtnrdakj7tnhv4kxctttdehhwm30d3h82unvwqhkgat5d9n82mryw4ehgvpj50v5cx" target="_blank" rel="noopener noreferrer" title="Apoie o site com Satoshis">
-  <img src="assets/wos.jpg" alt="QR Doação — Wallet of Satoshi">
-  <span class="donation-text">Apoie o site com Satoshis</span>
-</a>
+<div class="donation-cta" onclick="document.getElementById('qrModal').classList.add('active')">
+  <img src="assets/wos.jpg" alt="QR Doação">
+  <span>Apoie o site com Satoshis</span>
+</div>
+
+<!-- Modal -->
+<div id="qrModal" onclick="this.classList.remove('active')">
+  <div class="qr-box">
+    <h2>Obrigado por apoiar nosso projeto</h2>
+    <img src="assets/wos.jpg" alt="QR Code Grande">
+  </div>
+</div>
 <!-- --- FIM DOAÇÃO --- -->
 </body>
 </html>
