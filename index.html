@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOON Converter online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 240 10% 3.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 240 10% 3.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 240 10% 3.9%;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 240 4.8% 95.9%;
+      --secondary-foreground: 240 5.9% 10%;
+      --muted: 240 4.8% 95.9%;
+      --muted-foreground: 240 3.8% 46.1%;
+      --accent: 240 4.8% 95.9%;
+      --accent-foreground: 240 5.9% 10%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 5.9% 90%;
+      --input: 240 5.9% 90%;
+      --ring: 221.2 83.2% 53.3%;
+      --radius: 0.5rem;
+    }
+    .dark {
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
+      --card: 240 10% 3.9%;
+      --card-foreground: 0 0% 98%;
+      --popover: 240 10% 3.9%;
+      --popover-foreground: 0 0% 98%;
+      --primary: 217.2 91.2% 59.8%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 217.2 91.2% 59.8%;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      line-height: 1.6; min-height: 100vh;
+    }
+    .header {
+      background-color: hsl(var(--card));
+      border-bottom: 1px solid hsl(var(--border));
+      padding: 1.5rem 2rem;
+    }
+    .header-content {
+      max-width: 1600px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; }
+
+    .container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
+
+    .control-panel {
+      background-color: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 1.5rem; margin-bottom: 1.5rem;
+      display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius); font-size: 0.875rem; font-weight: 500;
+      height: 2.5rem; padding: 0 1rem; cursor: pointer; transition: all 0.2s;
+      border: none; font-family: inherit;
+    }
+    .btn-primary { background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background-color: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+    .btn-secondary:hover { opacity: 0.8; }
+    .btn-outline { background-color: transparent; border: 1px solid hsl(var(--border)); color: hsl(var(--foreground)); }
+    .btn-outline:hover { background-color: hsl(var(--accent)); }
+
+    /* Novas variantes */
+    .btn-danger { background-color: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+    .btn-danger:hover { filter: brightness(0.95); }
+    .btn-info { background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .btn-warning { background-color: #eab308; color: #111827; }
+    .btn-warning:hover { filter: brightness(0.95); }
+
+    .btn-sm { height: 2rem; padding: 0 0.75rem; font-size: 0.8125rem; }
+
+    .stats-card {
+      background-color: hsl(var(--muted));
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      display: flex; flex-direction: column; gap: 0.25rem; min-width: 200px;
+    }
+    .stats-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stats-value { font-size: 1.5rem; font-weight: 700; color: hsl(var(--primary)); }
+
+    .editors-container {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      height: calc(100vh - 300px); min-height: 500px;
+    }
+    .editor-wrapper {
+      background-color: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .editor-header {
+      padding: 1rem 1.5rem; border-bottom: 1px solid hsl(var(--border));
+      display: flex; align-items: center; justify-content: space-between;
+      background-color: hsl(var(--muted));
+    }
+    .editor-title { font-size: 0.875rem; font-weight: 600; color: hsl(var(--foreground)); }
+    .editor-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); background-color: hsl(var(--background));
+      padding: 0.25rem 0.625rem; border-radius: 0.25rem; }
+    .editor-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .editor-content { flex: 1; position: relative; }
+    .subtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;            /* ~14px */
+    color: hsl(var(--muted-foreground));
+    }
+
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background-color: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,.1);
+      display: none; z-index: 1000; animation: slideIn .3s ease-out;
+    }
+    .toast.show { display: block; }
+    .toast-success { border-left: 4px solid hsl(var(--primary)); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .editors-container { grid-template-columns: 1fr; height: auto; }
+      .editor-wrapper { min-height: 400px; }
+      .control-panel { flex-direction: column; align-items: stretch; }
+      .stats-card { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div>
+  <h1>TOON Converter online</h1>
+  <p class="subtitle">Formatos aceitos: JSON, XML, YAML e CSV</p>
+</div>
+  </header>
+
+  <div class="container">
+    <div class="control-panel">
+        <button id="downloadBtn" class="btn btn-info" title="Baixar arquivo">💾 Download</button>
+      
+
+      <div style="flex:1;"></div>
+
+      
+      <button id="loadExampleBtn" class="btn btn-secondary" title="Carregar exemplo">📄 Carregar Exemplo</button>
+
+      <div class="stats-card">
+        <span class="stats-label">Economia de Tokens</span>
+        <span class="stats-value" id="tokenSavings">0%</span>
+      </div>
+    </div>
+
+    <div class="editors-container">
+      <div class="editor-wrapper">
+        <div class="editor-header">
+          <span class="editor-title">Entrada</span>
+          <div class="editor-actions">
+            <!-- Limpar vermelho no canto direito antes do formato detectado -->
+            <button id="clearBtn" class="btn btn-danger btn-sm" title="Limpar entrada">🗑️ Limpar</button>
+            <span class="editor-label" id="inputFormatLabel">Vazio</span>
+          </div>
+        </div>
+        <div class="editor-content" id="inputEditor"></div>
+      </div>
+
+      <div class="editor-wrapper">
+        <div class="editor-header">
+          <span class="editor-title">Saída</span>
+          <div class="editor-actions">
+            <!-- Copiar amarelo antes do nome TOON -->
+            <button id="copyBtn" class="btn btn-warning btn-sm" title="Copiar saída">📋 Copiar</button>
+            <span class="editor-label">TOON</span>
+          </div>
+        </div>
+        <div class="editor-content" id="outputEditor"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    let inputEditor, outputEditor;
+    const cdnBase = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/';
+
+    // Worker via Blob URL (evita CSP e conflitos com data: URL)
+    window.MonacoEnvironment = {
+      getWorkerUrl: function () {
+        const code =
+`self.MonacoEnvironment = { baseUrl: '${cdnBase}' };
+importScripts('${cdnBase}vs/base/worker/workerMain.js');`;
+        const blob = new Blob([code], { type: 'application/javascript' });
+        return URL.createObjectURL(blob);
+      }
+    };
+
+    require.config({ paths: { 'vs': cdnBase + 'vs' } });
+
+    require(['vs/editor/editor.main'], function () {
+      inputEditor = monaco.editor.create(document.getElementById('inputEditor'), {
+        value: '',
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        fontSize: 14,
+        lineNumbers: 'on',
+        scrollBeyondLastLine: false,
+        wordWrap: 'on',
+        readOnly: false
+      });
+
+      // Garante colagem no editor de entrada
+      document.getElementById('inputEditor').addEventListener('paste', (e) => {
+        const text = e.clipboardData && e.clipboardData.getData('text/plain');
+        if (typeof text === 'string' && text.length) {
+          e.preventDefault();
+          inputEditor.focus();
+          const sel = inputEditor.getSelection();
+          inputEditor.executeEdits(null, [{ range: sel, text, forceMoveMarkers: true }]);
+        }
+      });
+
+      outputEditor = monaco.editor.create(document.getElementById('outputEditor'), {
+        value: '// A saída TOON aparecerá aqui após a conversão',
+        language: 'plaintext',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        fontSize: 14,
+        lineNumbers: 'on',
+        readOnly: true,
+        scrollBeyondLastLine: false,
+        wordWrap: 'on'
+      });
+
+      initializeEventListeners();
+    });
+
+    // Exemplos sem crases (evita conflitos de fechamento)
+    const sampleData = {
+      json: "{\n  \"users\": [\n    { \"id\": 1, \"name\": \"Alice\", \"role\": \"admin\", \"active\": true },\n    { \"id\": 2, \"name\": \"Bob\", \"role\": \"user\", \"active\": true },\n    { \"id\": 3, \"name\": \"Charlie\", \"role\": \"user\", \"active\": false }\n  ],\n  \"settings\": {\n    \"theme\": \"dark\",\n    \"language\": \"pt-BR\",\n    \"notifications\": true\n  },\n  \"metrics\": {\n    \"totalUsers\": 3,\n    \"activeUsers\": 2,\n    \"lastUpdated\": \"2025-11-13\"\n  }\n}",
+      xml: "<?xml version=\"1.0\"?>\n<data>\n  <users>\n    <user>\n      <id>1</id>\n      <name>Alice</name>\n      <role>admin</role>\n      <active>true</active>\n    </user>\n    <user>\n      <id>2</id>\n      <name>Bob</name>\n      <role>user</role>\n      <active>true</active>\n    </user>\n  </users>\n  <settings>\n    <theme>dark</theme>\n    <language>pt-BR</language>\n  </settings>\n</data>",
+      yaml: "users:\n  - id: 1\n    name: Alice\n    role: admin\n    active: true\n  - id: 2\n    name: Bob\n    role: user\n    active: true\n  - id: 3\n    name: Charlie\n    role: user\n    active: false\nsettings:\n  theme: dark\n  language: pt-BR\n  notifications: true\nmetrics:\n  totalUsers: 3\n  activeUsers: 2",
+      csv: "id,name,role,active\n1,Alice,admin,true\n2,Bob,user,true\n3,Charlie,user,false"
+    };
+
+    function initializeEventListeners() {
+      document.getElementById('loadExampleBtn').addEventListener('click', loadExample);
+      document.getElementById('clearBtn').addEventListener('click', clearEditors);
+      document.getElementById('downloadBtn').addEventListener('click', downloadToon);
+      document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+
+      let lastFormat = '';
+      let debounceId = null;
+      inputEditor.onDidChangeModelContent(() => {
+        const value = inputEditor.getValue();
+        const format = detectFormat(value);
+        if (format !== lastFormat) {
+          inputEditor.updateOptions({ language: format === 'csv' ? 'plaintext' : (format || 'json') });
+          document.getElementById('inputFormatLabel').textContent = format ? format.toUpperCase() : 'Detectando...';
+          lastFormat = format;
+        }
+        clearTimeout(debounceId);
+        debounceId = setTimeout(() => {
+          if (value.trim()) {
+            try { convertToToon(); } catch {}
+          }
+        }, 500);
+      });
+    }
+
+    // Detecção com suporte a JSON com comentários
+    function detectFormat(text) {
+      if (!text || !text.trim()) return '';
+      const jsonCandidate = stripJsonComments(text);
+      const trimmedJson = jsonCandidate.trim();
+      if (/^[\{\[]/.test(trimmedJson)) {
+        try { JSON.parse(jsonCandidate); return 'json'; } catch {}
+      }
+      const trimmed = text.trim();
+      if (/^<\?xml/i.test(trimmed) || /^<\w+[\s>]/.test(trimmed)) return 'xml';
+      if (/^\s*\w+:/m.test(text)) return 'yaml';
+      if (/^(?:[^\n,]+,)+[^\n,]+\n(?:.*?,.*\n?)+$/m.test(trimmed)) return 'csv';
+      return '';
+    }
+
+    // Remove comentários de JSON (// e /*...*/) preservando strings
+    function stripJsonComments(str) {
+      let out = '';
+      let inStr = false, strChar = '', inLine = false, inBlock = false, escaped = false;
+      for (let i = 0; i < str.length; i++) {
+        const c = str[i], n = str[i+1];
+        if (inLine) { if (c === '\n') { inLine = false; out += c; } continue; }
+        if (inBlock) { if (c === '*' && n === '/') { inBlock = false; i++; } continue; }
+        if (inStr) {
+          out += c;
+          if (!escaped && c === strChar) { inStr = false; strChar = ''; }
+          escaped = !escaped && c === '\\';
+          continue;
+        }
+        if (c === '"' || c === "'") { inStr = true; strChar = c; escaped = false; out += c; continue; }
+        if (c === '/' && n === '/') { inLine = true; i++; continue; }
+        if (c === '/' && n === '*') { inBlock = true; i++; continue; }
+        out += c;
+      }
+      return out;
+    }
+
+    // Remove comentários inline em YAML (# ...), respeitando aspas
+    function stripYamlInlineComments(str) {
+      const lines = str.split(/\r?\n/);
+      const out = lines.map(line => {
+        let inS = false, inD = false;
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (c === '"' && !inS) { inD = !inD; continue; }
+          if (c === "'" && !inD) { inS = !inS; continue; }
+          if (c === '#' && !inS && !inD) {
+            return line.slice(0, i).trimEnd();
+          }
+        }
+        return line;
+      });
+      return out.join('\n');
+    }
+
+    function loadExample() {
+      inputEditor.setValue(sampleData.json);
+      showToast('Exemplo carregado com sucesso!');
+    }
+
+    function clearEditors() {
+      inputEditor.setValue('');
+      outputEditor.setValue('// A saída TOON aparecerá aqui após a conversão');
+      document.getElementById('tokenSavings').textContent = '0%';
+      document.getElementById('inputFormatLabel').textContent = 'Detectando...';
+      showToast('Editores limpos!');
+    }
+
+    function convertToToon() {
+      const inputRaw = inputEditor.getValue();
+      const format = detectFormat(inputRaw);
+      if (!inputRaw.trim()) { showToast('Por favor, insira dados para converter!', 'error'); return; }
+
+      let jsonData;
+      try {
+        if (format === 'json') {
+          const cleaned = stripJsonComments(inputRaw);
+          jsonData = JSON.parse(cleaned);
+        } else if (format === 'xml') {
+          jsonData = parseXMLToJSON(inputRaw);
+        } else if (format === 'yaml') {
+          const cleaned = stripYamlInlineComments(inputRaw);
+          jsonData = parseYAMLToJSON(cleaned);
+        } else if (format === 'csv') {
+          jsonData = csvToJson(inputRaw);
+        } else {
+          showToast('Formato não detectado.', 'error'); return;
+        }
+      } catch (e) {
+        showToast('Erro ao interpretar a entrada (verifique comentários e sintaxe).', 'error'); return;
+      }
+
+      const toonOutput = jsonToToon(jsonData);
+      outputEditor.setValue(toonOutput);
+
+      const originalTokens = estimateTokens(inputRaw);
+      const toonTokens = estimateTokens(toonOutput);
+      const savings = Math.round(((originalTokens - toonTokens) / originalTokens) * 100);
+      document.getElementById('tokenSavings').textContent = savings > 0 ? `${savings}%` : '0%';
+
+      showToast('✅ Conversão concluída!');
+    }
+
+    // TOON Encoder
+    function jsonToToon(obj, indent = 0) {
+      const spaces = '  '.repeat(indent);
+      let result = '';
+      for (const [key, value] of Object.entries(obj)) {
+        if (Array.isArray(value)) {
+          if (value.length > 0 && typeof value[0] === 'object' && !Array.isArray(value[0])) {
+            const fields = Array.from(new Set(value.flatMap(v => Object.keys(v))));
+            result += `${spaces}${key}[${value.length}]{${fields.join(',')}}:\n`;
+            value.forEach(item => {
+              const row = fields.map(f => {
+                const v = item[f];
+                if (v === null || v === undefined) return '';
+                if (typeof v === 'string' && /[,\n:]/.test(v)) return '"' + v.replace(/"/g,'\\"') + '"';
+                return String(v);
+              });
+              result += `${spaces}  ${row.join(',')}\n`;
+            });
+          } else {
+            result += `${spaces}${key}[${value.length}]: ${value.join(',')}\n`;
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          result += `${spaces}${key}:\n`;
+          result += jsonToToon(value, indent + 1);
+        } else {
+          result += `${spaces}${key}: ${value}\n`;
+        }
+      }
+      return result;
+    }
+
+    // XML -> JSON
+    function parseXMLToJSON(xmlString) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+      function parseNode(node) {
+        if (node.nodeType === 3) return node.nodeValue;
+        const obj = {};
+        if (node.attributes && node.attributes.length > 0) {
+          for (let attr of node.attributes) obj['@' + attr.name] = attr.value;
+        }
+        const children = Array.from(node.childNodes);
+        const textNodes = children.filter(n => n.nodeType === 3 && n.nodeValue.trim());
+        if (textNodes.length === children.length) return textNodes.map(n => n.nodeValue.trim()).join('');
+        for (let child of children) {
+          if (child.nodeType !== 1) continue;
+          const childData = parseNode(child);
+          if (obj[child.nodeName]) {
+            if (!Array.isArray(obj[child.nodeName])) obj[child.nodeName] = [obj[child.nodeName]];
+            obj[child.nodeName].push(childData);
+          } else {
+            obj[child.nodeName] = childData;
+          }
+        }
+        return obj;
+      }
+      return parseNode(xmlDoc.documentElement);
+    }
+
+    // YAML -> JSON (simplificado)
+    function parseYAMLToJSON(yamlString) {
+      const lines = yamlString.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+      const result = {};
+      const stack = [{ obj: result, indent: -1, key: null }];
+      for (const line of lines) {
+        const indent = line.search(/\S/);
+        const trimmed = line.trim();
+        while (stack.length > 1 && stack[stack.length - 1].indent >= indent) stack.pop();
+        const currentFrame = stack[stack.length - 1];
+        const current = currentFrame.obj;
+
+        if (trimmed.startsWith('- ')) {
+          const content = trimmed.substring(2);
+          if (!Array.isArray(current[currentFrame.key])) current[currentFrame.key] = [];
+          const arr = current[currentFrame.key];
+          if (content.includes(':')) {
+            const [k, ...rest] = content.split(':');
+            const v = rest.join(':').trim();
+            const obj = {}; obj[k.trim()] = parseValue(v);
+            arr.push(obj); stack.push({ obj: obj, indent: indent, key: k.trim() });
+          } else {
+            arr.push(parseValue(content));
+          }
+        } else if (trimmed.includes(':')) {
+          const [k, ...rest] = trimmed.split(':');
+          const v = rest.join(':').trim();
+          if (v === '' || v === '{}' || v === '[]') {
+            current[k.trim()] = {};
+            stack.push({ obj: current[k.trim()], indent: indent, key: k.trim() });
+          } else {
+            current[k.trim()] = parseValue(v);
+            stack.push({ obj: current, indent: indent, key: k.trim() });
+          }
+        }
+      }
+      return result;
+    }
+
+    // CSV -> JSON
+    function csvToJson(csv) {
+      const rows = csv.trim().split(/\r?\n/);
+      if (rows.length < 2) return { csv: [] };
+      const headers = rows[0].split(',').map(h => h.trim());
+      const data = rows.slice(1).filter(r => r.trim()).map(r => {
+        const cols = r.split(',');
+        const o = {};
+        headers.forEach((h, i) => { o[h] = cols[i] !== undefined ? parseValue(cols[i].trim()) : null; });
+        return o;
+      });
+      return { csv: data };
+    }
+
+    function parseValue(value) {
+      if (value === 'true') return true;
+      if (value === 'false') return false;
+      if (value === 'null') return null;
+      if (!isNaN(value) && value.trim() !== '') return Number(value);
+      if (/^\".*\"$/.test(value)) return value.slice(1, -1).replace(/\\"/g, '"');
+      return value;
+    }
+
+    function estimateTokens(text) { return Math.ceil(text.length / 4); }
+
+    async function downloadToon() {
+      const content = outputEditor.getValue();
+      if (!content || content.includes('aparecerá aqui')) { showToast('Nenhum conteúdo para download!', 'error'); return; }
+      const suggestedName = 'output.toon';
+      try {
+        if ('showSaveFilePicker' in window) {
+          const handle = await window.showSaveFilePicker({
+            suggestedName,
+            types: [{ description: 'TOON', accept: { 'text/plain': ['.toon', '.txt'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          showToast('📥 Arquivo salvo!');
+          return;
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;
+      }
+      const name = prompt('Nome do arquivo para salvar:', suggestedName) || suggestedName;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      showToast('📥 Download iniciado!');
+    }
+
+    function copyToClipboard() {
+      const content = outputEditor.getValue();
+      if (!content || content.includes('aparecerá aqui')) { showToast('Nenhum conteúdo para copiar!', 'error'); return; }
+      navigator.clipboard.writeText(content).then(() => showToast('📋 Copiado para a área de transferência!'))
+        .catch(err => showToast('Erro ao copiar: ' + err.message, 'error'));
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message; toast.className = `toast toast-${type} show`;
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+  </script>
+<!-- --- DOAÇÃO FIXA (cole antes do </body>) --- -->
+<style>
+  .donation-cta {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    background: rgba(0,0,0,0.6);
+    padding: 8px 10px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    backdrop-filter: blur(4px);
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .donation-cta:hover { transform: translateY(-4px); opacity: 0.98; }
+  .donation-cta img {
+    width: 84px;      /* tamanho do QR - ajuste se quiser */
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.06);
+  }
+  .donation-cta .donation-text {
+    color: #ffd24d;    /* tom amarelo para destaque */
+    font-weight: 700;
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+  }
+
+  /* versão mobile: reduz tamanho e desloca um pouco */
+  @media (max-width: 520px){
+    .donation-cta { right: 10px; bottom: 10px; padding: 6px; }
+    .donation-cta img { width: 72px; }
+    .donation-cta .donation-text { font-size: 0.85rem; }
+  }
+</style>
+
+<a class="donation-cta" href="lnurl1dp68gurn8ghj7ampd3kx2ar0veekzar0wd5xjtnrdakj7tnhv4kxctttdehhwm30d3h82unvwqhkgat5d9n82mryw4ehgvpj50v5cx" target="_blank" rel="noopener noreferrer" title="Apoie o site com Satoshis">
+  <img src="assets/wos.jpg" alt="QR Doação — Wallet of Satoshi">
+  <span class="donation-text">Ajude o site — doar</span>
+</a>
+<!-- --- FIM DOAÇÃO --- -->
+</body>
+</html>
